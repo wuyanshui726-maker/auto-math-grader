@@ -1,0 +1,10 @@
+# 数据集路径
+path: D:/oral_math_project/handwritten_data/yolo_format
+train: images/train
+val: images/val
+
+# 类别数量
+nc: 15
+
+# 类别名称（顺序必须和标注时一致）
+names: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '-', '×', '÷', '=']
