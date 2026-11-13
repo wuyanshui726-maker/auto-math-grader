@@ -1,0 +1,58 @@
+<!-- pages/index/index.wxml -->
+<view class="container">
+  <view class="header">
+    <text class="title">口算作业批阅</text>
+  </view>
+  
+  <!-- 显示区域：优先显示标记后的图片，否则显示原图 -->
+  <view class="image-container" wx:if="{{imageUrl}}">
+    <!-- 标记后的图片（优先显示） -->
+    <image wx:if="{{markedImageUrl}}" src="{{markedImageUrl}}" mode="widthFix" class="preview-image"></image>
+    
+    <!-- 原图（当没有标记图片时显示） -->
+    <image wx:elif="{{imageUrl}}" src="{{imageUrl}}" mode="widthFix" class="preview-image"></image>
+  </view>
+  
+  <!-- canvas画布（隐藏，用于绘制） -->
+  <canvas wx:if="{{true}}" type="2d" id="myCanvas" class="hidden-canvas" bindready="onCanvasReady"></canvas>
+  
+  <view class="button-group">
+    <button type="primary" bindtap="takePhoto" class="btn">📷 拍照</button>
+    <button type="default" bindtap="chooseImage" class="btn">🖼️ 从相册选择</button>
+  </view>
+  
+  <!-- 检测结果（单个字符） -->
+  <view class="result-container" wx:if="{{result}}">
+    <text class="result-title">检测结果：</text>
+    <view class="result-item" wx:for="{{result.detections}}" wx:key="index">
+      <text>{{index+1}}. 类别: {{item.class}} | 置信度: {{item.confidence}}</text>
+    </view>
+    <text class="count">共检测到 {{result.count}} 个字符</text>
+  </view>
+
+  <!-- 算式批改结果 -->
+  <view class="questions-container" wx:if="{{questions && questions.length > 0}}">
+    <text class="questions-title">算式批改结果：</text>
+    <view class="question-item" wx:for="{{questions}}" wx:key="index">
+      <text class="question-text">{{item.num1}} {{item.operator}} {{item.num2}} = {{item.answer}}</text>
+      <text class="{{item.isCorrect ? 'correct' : 'wrong'}}">
+        {{item.isCorrect ? ' ✓' : ' ✗'}}
+      </text>
+      <text class="correct-answer" wx:if="{{!item.isCorrect}}">
+        (正确应为: {{item.correct}})
+      </text>
+    </view>
+    
+    <!-- 统计信息 -->
+    <view class="statistics">
+      <text class="stat-text">
+        共 {{totalCount}} 题，正确 {{correctCount}} 题
+      </text>
+    </view>
+  </view>
+
+  <!-- 无检测结果提示 -->
+  <view class="empty-container" wx:elif="{{result && result.detections && result.detections.length === 0}}">
+    <text class="empty-text">未检测到任何字符，请重试</text>
+  </view>
+</view>
